@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,8 +21,19 @@ namespace Przyrost_2
     {
         static void Main(string[] args)
         {
-
-            
+            //zapis ale tylko jedną tabelę
+            string connectionString = "Data Source=KAROL;Initial Catalog=Muzyka;Integrated Security=True";
+            string queryString =
+          "SELECT * FROM Albumy";
+            SqlConnection con = new SqlConnection(connectionString);
+            using (SqlCommand sqlComm = new SqlCommand(queryString, con) { CommandType = CommandType.Text })
+            {
+                SqlDataAdapter da = new SqlDataAdapter(sqlComm);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                ds.Tables[0].WriteXml(@"test.xml");
+            }
+            /*
             Muzyka muza = new Muzyka();
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
@@ -28,7 +42,7 @@ namespace Przyrost_2
             };
             string json = JsonConvert.SerializeObject(muza, Newtonsoft.Json.Formatting.Indented);
             Console.WriteLine(json);
-            /*Muzyka muza = new Muzyka();
+            Muzyka muza = new Muzyka();
             string JSONresult;
             JSONresult = JsonConvert.SerializeObject(muza);
             Console.WriteLine(JSONresult);*/
